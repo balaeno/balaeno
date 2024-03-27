@@ -16,3 +16,6 @@ jobs:
   build:
     uses: ./.github/workflows/build.yaml
     secrets: inherit
+  clippy:
+    uses: ./.github/workflows/clippy.yaml
+    secrets: inherit

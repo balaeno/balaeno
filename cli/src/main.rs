@@ -1,4 +1,5 @@
 use clap::{arg, Command};
+use libruntime::create::{create, CreateBuilder};
 
 fn cli() -> Command {
     Command::new("balaeno")
@@ -27,7 +28,7 @@ fn main() {
                 .get_one::<String>("id")
                 .map(|s| s.as_str())
                 .unwrap();
-            println!("create container: bundle: {:?}, id: {:?}", bundle, id);
+            create(CreateBuilder::new(bundle.to_string(), id.to_string()))
         }
         _ => unreachable!(), // If all subcommands are defined above, anything else is unreachable!()
     }

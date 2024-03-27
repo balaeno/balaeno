@@ -7,3 +7,14 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.5.4" }
+
+[workspace]
+members = ["cli", "libruntime"]
+
+[[bin]]
+name = "balaeno"
+path = "cli/src/main.rs"
+
+[lib]
+name = "libruntime"
+path = "libruntime/src/lib.rs"

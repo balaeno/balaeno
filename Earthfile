@@ -6,9 +6,10 @@ source:
     WORKDIR /workdir
     DO rust+INIT --keep_fingerprints=true
     COPY --keep-ts Cargo.toml Cargo.lock ./
-    COPY --keep-ts --dir src ./
+    COPY --keep-ts --dir cli libruntime ./
 
 build:
     FROM +source
+    WORKDIR /workdir/balaeno
     DO rust+CARGO --args="build --release" --output="release/[^/\.]+"
     SAVE ARTIFACT ./target/release/* AS LOCAL ./target/release/

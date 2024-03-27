@@ -10,6 +10,6 @@ source:
 
 build:
     FROM +source
-    WORKDIR /workdir/balaeno
+    WORKDIR /workdir
     DO rust+CARGO --args="build --release" --output="release/[^/\.]+"
-    SAVE ARTIFACT ./target/release/* AS LOCAL ./target/release/
+    SAVE ARTIFACT target/release/* AS LOCAL target/release/

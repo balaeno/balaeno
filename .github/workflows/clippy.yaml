@@ -1,4 +1,4 @@
-name: Build
+name: Clippy
 
 on:
   workflow_call:
@@ -7,10 +7,10 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  clippy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@master
         with:
@@ -24,4 +24,4 @@ jobs:
           repository: quay.io/kairos/packages
           packages: utils/earthly
       - name: Build
-        run: earthly --ci +build
+        run: earthly --ci +clippy

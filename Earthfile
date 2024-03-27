@@ -5,7 +5,7 @@ source:
     FROM rust:slim-bookworm
     WORKDIR /workdir
     DO rust+INIT --keep_fingerprints=true
-    COPY --keep-ts Cargo.toml Cargo.lock ./
+    COPY --keep-ts --if-exists Cargo.toml Cargo.lock ./
     COPY --keep-ts --dir cli libruntime ./
 
 build:

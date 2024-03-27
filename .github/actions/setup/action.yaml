@@ -1,5 +1,10 @@
 name: Setup builder
 description: Setup the builder for the project
+inputs:
+  github-token:
+    description: "GitHub token"
+    required: true
+    default: ""
 
 runs:
   using: "composite"
@@ -14,5 +19,5 @@ runs:
     - name: Install earthly
       uses: earthly/actions-setup@v1
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ inputs.github-token }}
         version: "latest"

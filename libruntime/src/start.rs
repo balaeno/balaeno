@@ -1,6 +1,6 @@
 use crate::context::Context;
 use crate::fs;
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use log::{debug, info};
 
 use oci_spec::runtime::Spec;

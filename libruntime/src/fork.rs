@@ -1,5 +1,5 @@
 use crate::error::{ErrorType, RuntimeError};
-use crate::namespace::{self, to_flags};
+use crate::namespace::{to_flags};
 use anyhow::{anyhow, Error};
 use nix::fcntl::OFlag;
 use nix::sys::stat::Mode;
@@ -11,11 +11,11 @@ pub fn clone_child(
     namespaces: &Vec<LinuxNamespace>,
 ) -> Result<Pid, Error> {
     const STACK_SIZE: usize = 4 * 1024 * 1024; // 4 MB
-    let ref mut stack: [u8; STACK_SIZE] = [0; STACK_SIZE];
+    let stack: &mut [u8; STACK_SIZE] = &mut [0; STACK_SIZE];
 
     let spec_namespaces = namespaces
-        .into_iter()
-        .map(|ns| to_flags(ns))
+        .iter()
+        .map(to_flags)
         .reduce(|a, b| a | b);
 
     let clone_flags = match spec_namespaces {
@@ -42,7 +42,7 @@ pub fn fork_container(spec: &Spec, namespaces: &Vec<LinuxNamespace>) -> Result<P
         if let Some(namespaces) = &linux.namespaces() {
             for ns in namespaces {
                 if let Some(path) = &ns.path() {
-                    let fd = match open(path.as_os_str(), OFlag::empty(), Mode::empty()) {
+                    let _fd = match open(path.as_os_str(), OFlag::empty(), Mode::empty()) {
                         Ok(fd) => fd,
                         Err(err) => {
                             return Err(anyhow!(

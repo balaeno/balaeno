@@ -2,7 +2,7 @@ use crate::{
     error::{ErrorType, RuntimeError},
     fs,
 };
-use anyhow::{anyhow, Error, Result};
+use anyhow::Result;
 use nix::{
     sys::socket::{
         bind, connect, listen, socket, AddressFamily, Backlog, SockFlag, SockType, UnixAddr,
@@ -10,8 +10,7 @@ use nix::{
     unistd::{close, read, write},
 };
 use std::{
-    borrow::Borrow,
-    os::fd::{AsRawFd, BorrowedFd, FromRawFd, OwnedFd, RawFd},
+    os::fd::{AsRawFd, BorrowedFd, OwnedFd},
     path::Path,
 };
 pub struct IpcChannel<'a> {
@@ -33,7 +32,7 @@ impl IpcChannel<'_> {
             error_type: ErrorType::Runtime,
         })?;
 
-        let sockaddr = UnixAddr::new(Path::new(&fs::abs_path(&path).expect("IPC path is None")))
+        let sockaddr = UnixAddr::new(Path::new(&fs::abs_path(path).expect("IPC path is None")))
             .map_err(|_| RuntimeError {
                 message: "unable to create unix socket".to_string(),
                 error_type: ErrorType::Runtime,

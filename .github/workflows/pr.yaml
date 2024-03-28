@@ -1,4 +1,4 @@
-name: Pr
+name: pr
 
 on: [pull_request]
 

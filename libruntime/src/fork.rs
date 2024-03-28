@@ -3,9 +3,7 @@ use crate::namespace::{self, to_flags};
 use anyhow::{anyhow, Error};
 use nix::fcntl::OFlag;
 use nix::sys::stat::Mode;
-use nix::{sched::clone, sched::CloneFlags,
-    unistd::Pid,
-    fcntl::open};
+use nix::{fcntl::open, sched::clone, sched::CloneFlags, unistd::Pid};
 use oci_spec::runtime::{LinuxNamespace, Spec};
 
 pub fn clone_child(
@@ -38,28 +36,27 @@ pub fn clone_child(
     })
 }
 
-
 pub fn fork_container(spec: &Spec, namespaces: &Vec<LinuxNamespace>) -> Result<Pid, Error> {
-    let pid = clone_child(||{todo!()} , namespaces)?;
-    if let Some(linux) = &spec.linux(){
-        if let Some(namespaces) = &linux.namespaces(){
-        for ns in namespaces{
-            if let Some(path) = &ns.path(){
-                let fd = match open(path.as_os_str(), OFlag::empty(), Mode::empty()) {
-                    Ok(fd) => fd,
-                    Err(err) => {
-                        return Err(anyhow!(
-                            "{}",
-                            RuntimeError {
-                                message: err.to_string(),
-                                error_type: ErrorType::Container
-                            }
-                        ));
-                    }
-                };
+    let pid = clone_child(|| todo!(), namespaces)?;
+    if let Some(linux) = &spec.linux() {
+        if let Some(namespaces) = &linux.namespaces() {
+            for ns in namespaces {
+                if let Some(path) = &ns.path() {
+                    let fd = match open(path.as_os_str(), OFlag::empty(), Mode::empty()) {
+                        Ok(fd) => fd,
+                        Err(err) => {
+                            return Err(anyhow!(
+                                "{}",
+                                RuntimeError {
+                                    message: err.to_string(),
+                                    error_type: ErrorType::Container
+                                }
+                            ));
+                        }
+                    };
+                }
             }
         }
-    }
     }
 
     Ok(pid)

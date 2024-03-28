@@ -7,4 +7,4 @@ mod fork;
 mod fs;
 pub mod log;
 mod namespace;
-//mod ipc;
+mod ipc;

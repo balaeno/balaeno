@@ -16,8 +16,8 @@ runs:
     - name: Set up Docker Buildx
       id: buildx
       uses: docker/setup-buildx-action@master
-    # - name: Install earthly
-    #   uses: Luet-lab/luet-install-action@v1.1
-    #   with:
-    #     repository: quay.io/kairos/packages
-    #     packages: utils/earthly
+    - name: Install earthly
+      uses: Luet-lab/luet-install-action@v1.1
+      with:
+        repository: quay.io/kairos/packages
+        packages: utils/earthly

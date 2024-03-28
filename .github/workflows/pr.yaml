@@ -12,9 +12,6 @@ permissions:
   issues: read
   checks: write
 
-env:
-  EARTHLY_BUILDKIT_HOST: "tcp://192.168.0.103:8372"
-
 jobs:
   build:
     uses: ./.github/workflows/build.yaml

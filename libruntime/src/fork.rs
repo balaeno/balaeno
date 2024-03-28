@@ -1,5 +1,5 @@
 use crate::error::{ErrorType, RuntimeError};
-use crate::namespace::{to_flags};
+use crate::namespace::to_flags;
 use anyhow::{anyhow, Error};
 use nix::fcntl::OFlag;
 use nix::sys::stat::Mode;
@@ -13,10 +13,7 @@ pub fn clone_child(
     const STACK_SIZE: usize = 4 * 1024 * 1024; // 4 MB
     let stack: &mut [u8; STACK_SIZE] = &mut [0; STACK_SIZE];
 
-    let spec_namespaces = namespaces
-        .iter()
-        .map(to_flags)
-        .reduce(|a, b| a | b);
+    let spec_namespaces = namespaces.iter().map(to_flags).reduce(|a, b| a | b);
 
     let clone_flags = match spec_namespaces {
         Some(flags) => flags,
@@ -38,25 +35,42 @@ pub fn clone_child(
 
 pub fn fork_container(spec: &Spec, namespaces: &Vec<LinuxNamespace>) -> Result<Pid, Error> {
     let pid = clone_child(|| todo!(), namespaces)?;
-    if let Some(linux) = &spec.linux() {
-        if let Some(namespaces) = &linux.namespaces() {
-            for ns in namespaces {
-                if let Some(path) = &ns.path() {
-                    let _fd = match open(path.as_os_str(), OFlag::empty(), Mode::empty()) {
-                        Ok(fd) => fd,
-                        Err(err) => {
-                            return Err(anyhow!(
-                                "{}",
-                                RuntimeError {
-                                    message: err.to_string(),
-                                    error_type: ErrorType::Container
-                                }
-                            ));
-                        }
-                    };
-                }
+    let Some(linux) = &spec.linux() else {
+        return Err(anyhow!(
+            "{}",
+            RuntimeError {
+                message: "linux is not defined".to_string(),
+                error_type: ErrorType::Container
             }
-        }
+        ));
+    };
+
+    let Some(namespaces) = &linux.namespaces() else {
+        return Err(anyhow!(
+            "{}",
+            RuntimeError {
+                message: "namespaces is not defined".to_string(),
+                error_type: ErrorType::Container
+            }
+        ));
+    };
+
+    for ns in namespaces {
+        let Some(path) = &ns.path() else {
+            continue;
+        };
+        let _fd = match open(path.as_os_str(), OFlag::empty(), Mode::empty()) {
+            Ok(fd) => fd,
+            Err(err) => {
+                return Err(anyhow!(
+                    "{}",
+                    RuntimeError {
+                        message: err.to_string(),
+                        error_type: ErrorType::Container
+                    }
+                ));
+            }
+        };
     }
 
     Ok(pid)

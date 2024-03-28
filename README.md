@@ -1,4 +1,4 @@
 # balaeno
-[![Build](https://github.com/balaeno/balaeno/actions/workflows/build.yaml/badge.svg?branch=main&event=push)](https://github.com/balaeno/balaeno/actions/workflows/build.yaml)
+[![Build](https://github.com/balaeno/balaeno/actions/workflows/master.yaml/badge.svg)](https://github.com/balaeno/balaeno/actions/workflows/master.yaml)
 
 # development

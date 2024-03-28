@@ -1,7 +1,7 @@
 name: Setup builder
 description: Setup the builder for the project
 inputs:
-  github-token:
+  github_token:
     description: "GitHub token"
     required: true
     default: ""

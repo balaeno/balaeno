@@ -13,13 +13,13 @@ use std::{
     os::fd::{AsRawFd, BorrowedFd, OwnedFd},
     path::Path,
 };
-pub struct IpcChannel<'a> {
+pub struct IpcChannel {
     fd: OwnedFd,
     sock_path: String,
-    _client: Option<BorrowedFd<'a>>,
+    _client: Option<i32>,
 }
 
-impl IpcChannel<'_> {
+impl IpcChannel {
     pub fn new(path: &String) -> Result<IpcChannel, RuntimeError> {
         let socket_fd = socket(
             AddressFamily::Unix,
@@ -97,13 +97,13 @@ impl IpcChannel<'_> {
                 error_type: ErrorType::Runtime,
             })?;
 
-        self._client = Some(unsafe { BorrowedFd::borrow_raw(child_socket_fd) });
+        self._client = Some(child_socket_fd);
         Ok(())
     }
 
     pub fn send(&self, message: &str) -> Result<()> {
         let fd = match self._client {
-            Some(fd) => fd.as_raw_fd(),
+            Some(fd) => fd,
             None => self.fd.as_raw_fd(),
         };
 
@@ -119,7 +119,7 @@ impl IpcChannel<'_> {
 
     pub fn recv(&self) -> Result<String, RuntimeError> {
         let fd = match self._client {
-            Some(fd) => fd.as_raw_fd(),
+            Some(fd) => fd,
             None => self.fd.as_raw_fd(),
         };
         let mut buf = [0; 1024];

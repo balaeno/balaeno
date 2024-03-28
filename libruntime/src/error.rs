@@ -1,11 +1,22 @@
+use std::error::Error;
 use std::fmt::{self, Display, Formatter};
 
-pub struct Error {
+
+#[derive(strum_macros::Display, Debug)]
+pub enum ErrorType {
+    Runtime,
+    Container,
+}
+#[derive(Debug)]
+pub struct RuntimeError {
     pub message: String,
+    pub error_type: ErrorType,
 }
 
-impl Display for Error {
+impl Display for RuntimeError {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        write!(f, "{}", self.message)
+        write!(f, "{}, error type: {}", self.message, self.error_type)
     }
 }
+
+impl Error for RuntimeError {}

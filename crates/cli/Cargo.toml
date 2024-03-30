@@ -6,4 +6,6 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.5.4" }
 libruntime = { path = "../libruntime", version = "0.1.0" }
+libdocker = { path = "../libdocker", version = "0.1.0" }
 log = "0.4"
+tokio = { version = "1.37.0", features = ["full"] }

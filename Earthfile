@@ -7,7 +7,7 @@ source:
     RUN rustup component add clippy
     DO rust+INIT --keep_fingerprints=true
     COPY --keep-ts --if-exists Cargo.toml Cargo.lock ./
-    COPY --keep-ts --dir cli libruntime ./
+    COPY --keep-ts --dir cli libruntime libdocker ./
 
 build:
     FROM +source

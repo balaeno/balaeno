@@ -13,6 +13,8 @@ mod entry;
 mod store;
 mod namespace;
 pub mod start;
+mod entry;
+mod store;
 
 lazy_static!{
     pub static ref OCI_VERSION: String = String::from("0.2.0");

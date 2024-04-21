@@ -1,4 +1,4 @@
-use std::{fs::create_dir_all, path::Path};
+use std::{fs::create_dir_all, os::unix::fs::symlink, path::Path};
 
 use anyhow::{anyhow, Result};
 use nix::{
@@ -73,5 +73,36 @@ pub fn pivot_rootfs(root: &Path) -> Result<()> {
         }
     }
 
+    Ok(())
+}
+
+// https://github.com/opencontainers/runtime-spec/blob/main/runtime-linux.md
+pub fn dev_symlinks(root: &Path) -> Result<()> {
+    let links = [
+        ("/proc/self/fd", "/dev/fd"),
+        ("/proc/self/fd/0", "/dev/stdin"),
+        ("/proc/self/fd/1", "/dev/stdout"),
+        ("/proc/self/fd/2", "/dev/stderr"),
+    ];
+
+    links
+        .iter()
+        .for_each(|(src, dst)| match rootfs_symlink(root, src, dst) {
+            Ok(_) => {}
+            Err(e) => {
+                panic!("failed to create symlink: {:?}", e);
+            }
+        });
+
+    Ok(())
+}
+
+pub fn rootfs_symlink(root: &Path, src: &str, dst: &str) -> Result<()> {
+    match symlink(src, root.join(dst)) {
+        Ok(_) => {}
+        Err(e) => {
+            return Err(anyhow!("failed to create symlink: {:?}", e));
+        }
+    }
     Ok(())
 }

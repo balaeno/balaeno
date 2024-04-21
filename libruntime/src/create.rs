@@ -27,8 +27,10 @@ pub fn create(_ctx: Context, params: CreateBuilder) -> Result<()> {
         .open_file()?
         .read_to_string(&mut config_str)?;
 
-    info!("config_str: {:?}", config_str);
     let spec = serde_json::from_str::<Spec>(&config_str)?;
-    info!("spec: {:?}", spec);
+    debug!("spec: {:?}", spec);
+
+
+
     Ok(())
 }
